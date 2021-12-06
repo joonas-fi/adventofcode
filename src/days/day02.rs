@@ -11,11 +11,11 @@ pub fn a() {
         position = command_apply(command, position)
     }
 
-    let multiplied = position.horizontal * position.depth;
-
     println!(
         "horizontal={} depth={} multiplied={}",
-        position.horizontal, position.depth, multiplied,
+        position.horizontal,
+        position.depth,
+        position_multiply(&position),
     );
 }
 
@@ -37,12 +37,12 @@ fn position_zero() -> Position {
     }
 }
 
-fn mul(position: Position) -> i32 {
+fn position_multiply(position: &Position) -> i32 {
     position.horizontal * position.depth
 }
 
-fn command_parse(commStr: String) -> Result<Command, String> {
-    match commStr {
+fn command_parse(comm_str: String) -> Result<Command, String> {
+    match comm_str {
         i if i.starts_with("forward ") => Ok(Command::Forward(
             i["forward ".len()..].parse::<i32>().unwrap(),
         )),
@@ -50,7 +50,7 @@ fn command_parse(commStr: String) -> Result<Command, String> {
             Ok(Command::Down(i["down ".len()..].parse::<i32>().unwrap()))
         }
         i if i.starts_with("up ") => Ok(Command::Up(i["up ".len()..].parse::<i32>().unwrap())),
-        _ => Err(format!("invalid command: {}", commStr)),
+        _ => Err(format!("invalid command: {}", comm_str)),
     }
 }
 
@@ -96,6 +96,6 @@ forward 2
         assert_eq!(position.horizontal, 15);
         assert_eq!(position.depth, 10);
 
-        assert_eq!(mul(position), 150);
+        assert_eq!(position_multiply(&position), 150);
     }
 }
